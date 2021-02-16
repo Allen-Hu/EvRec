@@ -1,4 +1,4 @@
-package com.example.EvRec
+package com.yagami.ian.EvRec
 
 import io.flutter.embedding.android.FlutterActivity
 
