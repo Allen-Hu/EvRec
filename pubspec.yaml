@@ -33,6 +33,7 @@ dependencies:
   shared_preferences: ^0.5.12+4
   background_location: ^0.3.0
   location_permissions: ^3.0.0+1
+  http: ^0.12.2
 
 dev_dependencies:
   flutter_test:
