@@ -12,11 +12,8 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => FacebookModel()),
-        ChangeNotifierProvider(create: (context) => LocationModel()),
-      ],
+    return ChangeNotifierProvider(
+      create: (context) => FacebookModel(),
       child: MaterialApp(
         title: 'EvRec',
         theme: ThemeData(
@@ -43,18 +40,16 @@ class _BodyWrapperState extends State<BodyWrapper> {
   bool loading = true;
 
   FacebookModel facebookModel;
-  LocationModel locationModel;
 
   Future<void> init() async {
     await facebookModel.init();
-    await locationModel.init();
+    await locationService.init();
   }
 
   @override
   Widget build(BuildContext context) {
     // initialize providers
     facebookModel = Provider.of<FacebookModel>(context, listen: false);
-    locationModel = Provider.of<LocationModel>(context, listen: false);
 
     if (loading) {
       init().then((value) {

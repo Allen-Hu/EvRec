@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:background_location/background_location.dart';
 import 'package:location_permissions/location_permissions.dart';
 
-class LocationModel extends ChangeNotifier {
+class LocationService {
   Future<void> init() async {
     // check and request permission
     PermissionStatus status =
@@ -25,13 +24,14 @@ class LocationModel extends ChangeNotifier {
     await BackgroundLocation.setAndroidConfiguration(1000);
   }
 
-  void start() {
+  void start(Function callback) {
     BackgroundLocation.startLocationService();
 
     BackgroundLocation.getLocationUpdates((location) {
       print("Got Location");
       print(location.latitude);
       print(location.longitude);
+      callback();
     });
   }
 
@@ -39,3 +39,5 @@ class LocationModel extends ChangeNotifier {
     BackgroundLocation.stopLocationService();
   }
 }
+
+final locationService = LocationService();
