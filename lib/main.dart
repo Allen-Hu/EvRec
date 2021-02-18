@@ -1,9 +1,9 @@
 import 'package:EvRec/body/info.dart';
 import 'package:EvRec/body/login.dart';
 import 'package:EvRec/providers/facebook.dart';
+import 'package:EvRec/providers/location.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   runApp(MyApp());
@@ -12,8 +12,11 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => FacebookModel(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => FacebookModel()),
+        ChangeNotifierProvider(create: (context) => LocationModel()),
+      ],
       child: MaterialApp(
         title: 'EvRec',
         theme: ThemeData(
@@ -39,18 +42,28 @@ class BodyWrapper extends StatefulWidget {
 class _BodyWrapperState extends State<BodyWrapper> {
   bool loading = true;
 
+  FacebookModel facebookModel;
+  LocationModel locationModel;
+
+  Future<void> init() async {
+    await facebookModel.init();
+    await locationModel.init();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final facebookModel = Provider.of<FacebookModel>(context, listen: false);
-    facebookModel.init().then((value) {
-      setState(() {
-        loading = false;
-      });
-    });
+    // initialize providers
+    facebookModel = Provider.of<FacebookModel>(context, listen: false);
+    locationModel = Provider.of<LocationModel>(context, listen: false);
 
-    if (loading)
+    if (loading) {
+      init().then((value) {
+        setState(() {
+          loading = false;
+        });
+      });
       return Center(child: CircularProgressIndicator());
-    else
+    } else {
       return Consumer<FacebookModel>(
         builder: (context, facebookModel, child) {
           if (facebookModel.isLoggedIn)
@@ -59,5 +72,6 @@ class _BodyWrapperState extends State<BodyWrapper> {
             return LoginBody();
         },
       );
+    }
   }
 }
